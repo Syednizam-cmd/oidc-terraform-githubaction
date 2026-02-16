@@ -8,8 +8,13 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read 
+
+
 jobs:
-  terraform:
+  oidc-test:
     name: 'Terraform Lint, Security Check, and Deploy'
     runs-on: ubuntu-latest
 
@@ -19,11 +24,12 @@ jobs:
 
     steps:
     - name: 'Checkout GitHub repository'
-      uses: actions/checkout@v2
-
-    - name: 'Configure AWS credentials'
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: actions/checkout@v4
+    - name: Configure AWS Credentials for China region audience
+      uses: aws-actions/configure-aws-credentials@v6.0.0
       with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::211125523266:role/github-action-role
         
 
     - name: 'Set up Terraform'
